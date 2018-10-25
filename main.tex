@@ -2,7 +2,7 @@
 
 % Ein paar hilfreiche Pakete
 \usepackage[utf8]{inputenc}
-\usepackage[ngerman]{babel}
+\usepackage[nenglish]{babel}
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -12,10 +12,10 @@
 
 \mathtoolsset{showonlyrefs}
 
-\markboth{Proseminar WS 16/17: Anthropomatik: Von der Theorie zur Anwendung}{Proseminar SS 16: Anthropomatik: Von der Theorie zur Anwendung}
+\markboth{Proseminar WS 18/19: Anthropomatik: Von der Theorie zur Anwendung}{Proseminar SS 16: Anthropomatik: Von der Theorie zur Anwendung}
 
 % Hier den Titel des eigenen Proseminars eitnragen
-\title{Discovery of Processes}
+\title{Discovery of Processes / Process Minining}
 
 % Hier deinen eigenen Namen
 \author{Maximilian Franz}
@@ -29,56 +29,43 @@
 TODO
 \end{abstract}
 
+\section{Notes}
+Preliminary Notes throughout research. \newline
+\textbf{Possible Outline}
+\begin{enumerate}
+\item Introduction - Importance of ProcessMining
+    \item Introduce the Task of Process Mining and Notation
+    \item $\alpha$-algorithm
+    \item Other algorithms
+    \item comparison 
+    \item implementation 
+\end{enumerate}
+
 % Erster Abschnitt
 \section{Introduction}
-Some intro text
+\begin{itemize}
+    \item The importance and usage of process mining 
+    \item The difficulties and problems of process mining
+\end{itemize}
+Errors of \textbf{Process Modelling} include
+\begin{itemize}
+    \item The model describes an idealized version of reality.
+    \item Human behaviour cannot be captured in simple stated forms
+    \item The model is at the wrong abstraction level. 
+\end{itemize}
+Thus process mining can facilitate the construction of better models in less time \cite{process_mining}. \newline
 
-\section{Ein paar Hinweise}
+\section{Notation and Terminology}
+Introduce important notations in formula and terminology around processes
 
-Vor eine Subsection gehören immer noch ein paar einleitende Worte!
+\begin{itemize}
 
-\subsection{Absätze, etc.}
-
-Ein neuer Absatz sollte nicht durch einen Zeilenumbruchs-Befehl, sondern durch eine Leerzeile im Code erzeugt werden.
-
-Das hier ist richtig.
-\\ Das hier nicht.
-
-\subsection{Formeln}
-
-So können Formeln gesetzt und referenziert werden:
-\begin{equation}
-    a = b + c \,.
-    \label{eq:name}
-\end{equation}
-Laut \eqref{eq:name} ist $a=b+c$. Formeln sind Teil des Fließtextes und sollten deshalb korrekt mit Punkten und Kommata interpunktiert werden.  Das \texttt{\textbackslash,} fügt dabei einen kleinen Abstand zwischen Formel und Interpunktion ein.
-
-Mehrzeiliger Formelsatz mit der \emph{split} Umgebung innerhalb der \emph{equation} Umgebung:
-\begin{equation}
-    \begin{split}
-        a      &= b + c \,, \\
-        a_{ij} &= b_{ij} + c_{ij} \,.
-    \end{split}
-\end{equation}
-
-Funktionen sollen in Formeln \emph{nicht} mit mathematischer Schrift gesetzt werden.
-Dazu gibt es in LaTeX für fast alle Funktionen schon Makros, z.B. 
-\begin{align}
-    y = \sin(x)\,,
-\end{align}
-nicht 
-\begin{align}
-    y = sin(x)
-\end{align}
-benutzen. Für nicht vorhandene Funktionen kann \emph{operatorname} eingesetzt werden:
-\begin{equation}
-    y = \operatorname{spur}(X) \,.
-\end{equation}
-
-\subsection{Bilder}
-
-So werden Bilder eingebunden (als pdf, jpg oder png):
-
+    \item \textbf{Process} -  \textbf{Case}
+    \item \textbf{Petri Nets} and WF-Nets 
+    \item \textbf{Logs} and Data Notation
+    \item \textbf{Process Discovery Problem Statement}
+\end{itemize}
+\textbf{Logs:} Events are $e \in \mathcal{E}$
 \begin{figure}[!h]
     \centering
     \includegraphics[width=0.48\textwidth]{Bild.png}
@@ -86,24 +73,7 @@ So werden Bilder eingebunden (als pdf, jpg oder png):
     \label{fig:bild}
 \end{figure}
 
-Auf diese Abbildung wird dann mit Abb. \ref{fig:bild} verwiesen.
 
-\subsection{Zitate}
-
-Immer korrekt zitieren \cite{yaakov_bar-shalom_estimation_2001}!
-
-\subsection{LaTeX Hilfe}
-
-Diese Website ist sehr nützlich:
-
-\url{http://en.wikibooks.org/wiki/LaTeX}
-
-\section{Zusammenfassung und Ausblick}
-
-In dieser Ausarbeitung wurde ...
-
-% Literaturverzeichnis in Literatur.bib
-% (z.B. per Hand oder mit Zotero, Jabref, etc. editieren) 
 \bibliographystyle{ieeetr}
 \bibliography{references}
 \end{document}
