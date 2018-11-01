@@ -29,50 +29,79 @@
 TODO
 \end{abstract}
 
-\section{Notes}
-Preliminary Notes throughout research. \newline
-\textbf{Possible Outline}
-\begin{enumerate}
-\item Introduction - Importance of ProcessMining
-    \item Introduce the Task of Process Mining and Notation
-    \item $\alpha$-algorithm
-    \item Other algorithms
-    \item comparison 
-    \item implementation 
-\end{enumerate}
-
 % Erster Abschnitt
 \section{Introduction}
-\begin{itemize}
-    \item The importance and usage of process mining 
-    \item The difficulties and problems of process mining
-\end{itemize}
-Errors of \textbf{Process Modelling} include
+Considering the ever increasing amount of data \cite{manyika2011bigdata} \cite{hilbert2011worldcapacity}hi1un2wie
+the industry is collecting, we need a reliable tool to retrieve information from this data. Keywords like \textit{Big Data} fall more and more often in recent times. The problem in data analysis is not anymore the lack of quality data but the lack of \textit{compute} to process that data into meaningful and actionable information. 
+
+Process Management on the other hand has been a part of business development for quite some time. However, traditional \textit{Process Modelling} has some major drawbacks due to the nature of its approach. 
+Errors of traditional \textbf{Process Modelling} include
 \begin{itemize}
     \item The model describes an idealized version of reality.
     \item Human behaviour cannot be captured in simple stated forms
     \item The model is at the wrong abstraction level. 
+    \item Event Logs only contain positive examples, always.
 \end{itemize}
-Thus process mining can facilitate the construction of better models in less time \cite{process_mining}. \newline
+Here, \textit{Process Mining} as a conjunction of \textit{Data Mining} and \textit{Process Modelling} comes in and alleviates some of the problems. 
+Process mining can facilitate the construction of better models in less time \cite{process_mining}.
 
-\section{Notation and Terminology}
-Introduce important notations in formula and terminology around processes
 
 \begin{itemize}
-
-    \item \textbf{Process} -  \textbf{Case}
-    \item \textbf{Petri Nets} and WF-Nets 
-    \item \textbf{Logs} and Data Notation
-    \item \textbf{Process Discovery Problem Statement}
+    \item The importance and usage of process mining 
+    \item The difficulties and problems of process mining (Data-Quality, Limited Perspective)
 \end{itemize}
-\textbf{Logs:} Events are $e \in \mathcal{E}$
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=0.48\textwidth]{Bild.png}
-    \caption{Hier kommen weitere Erklärungen zum Bild.}
-    \label{fig:bild}
-\end{figure}
 
+Short outline of the rest of the paper.
+
+% Notation
+\section{Process Mining - Task and Terminology - Preliminaries}
+\label{sec:terminology}
+Introduce important notations in formula and terminology around processes
+\begin{itemize}
+    \item Process - Case - Event 
+    \item Trace - Log - Simple Log - (Ordering Relations) 
+    \item Directly-Follow-Graph (maybe only later)
+    \item Shortly introduce Petri-Nets / WF-Nets (for comparisons to other approaches)
+    \item The Problem Statement after \cite{process_mining}
+\end{itemize}
+\textbf{(Maybe put the following in a seperate section.)}
+
+
+Elaborate on the different quality dimension of Process Mining and quickly summarize different approaches and how they compare in these quality criteria.
+\begin{itemize}
+    \item Fitness - "replay of logs"
+    \item Simplicity - "Occam's razor" 
+    \item Generalization - "not overfitting" 
+    \item Precision - "not underfitting" 
+\end{itemize}
+Lead towards 
+
+\section{Inductive Mining}
+\label{sec:inductivemining}
+Introduce \textit{Inductive Mining} and use the terminology from Section \ref{sec:terminology} to explain \textbf{in detail} how the algorithms work. Starting from a general approach focus on one specific extension of \textit{Inductive Mining} that solves a particular problem from above. (e.g. $IM_F$, $IM_C$, $IM_D$, $IM_{FD}$).
+
+Introduce how \textit{Inductive Mining} allows for the following and why it is "better" compared to other methods described in Section \ref{sec:terminology}
+\begin{itemize}
+    \item Formal Guarantees
+    \item Flexibility 
+    \item Scalability
+\end{itemize} 
+After \cite{process_mining}.
+
+Introduce and use further formal terminology and important formulas of Inductive Mining along the way. 
+\begin{itemize}
+    \item Directly Follows Graph
+    \item Cuts 
+    \item Algorithmic Notation in different notations
+\end{itemize}
+
+\section{A minimal example}
+\label{sec:example}
+Showcasing the method with a minimal working example to convey the major advantage. Analysis of the model and its minimal results according to the desired outcomes. 
+
+
+\section{Discussion \& Related Work}
+What are the prospect of \textit{Process Mining}, which techniques are new, which are promising in the context of ever larger amounts of data and new requirements?
 
 \bibliographystyle{ieeetr}
 \bibliography{references}
