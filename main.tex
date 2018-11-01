@@ -12,10 +12,10 @@
 
 \mathtoolsset{showonlyrefs}
 
-\markboth{Proseminar WS 18/19: Anthropomatik: Von der Theorie zur Anwendung}{Proseminar SS 16: Anthropomatik: Von der Theorie zur Anwendung}
+\markboth{Proseminar WS 18/19: Anthropomatics: From Theory to Practice}{Proseminar SS 16: Anthropomatik: Von der Theorie zur Anwendung}
 
 % Hier den Titel des eigenen Proseminars eitnragen
-\title{Discovery of Processes / Process Minining}
+\title{Scalable Inductive Process Mining for sound models}
 
 % Hier deinen eigenen Namen
 \author{Maximilian Franz}
@@ -75,6 +75,7 @@ Elaborate on the different quality dimension of Process Mining and quickly summa
     \item Generalization - "not overfitting" 
     \item Precision - "not underfitting" 
 \end{itemize}
+Use a table to display the differences in different algorithms ($\alpha$, HeuristicMiner, InductiveMiner, EvolutionaryTree, ...) with regard to criteria (rediscvoerablity, soundness, single-pass (scalablilty)).
 Lead towards 
 
 \section{Inductive Mining}
@@ -96,9 +97,17 @@ Introduce and use further formal terminology and important formulas of Inductive
     \item Algorithmic Notation in different notations
 \end{itemize}
 
-\subsubsection{Inductive Miner - Infrequent} % (fold)
+\subsection{Inductive Miner - Infrequent} % (fold)
 \label{ssub:inductive_miner_infrequent}
+Introduce how infrequent behaviour is excluded through filters on cuts, logs and graphs later. 
 
+\subsection{Inductive Miner - Scalable} % (fold)
+\label{sub:inductive_miner_scalable}
+Introduce work on scalable algorithms that work on directly-follows-graphs rather than on the event logs. Thus only a single \emph{pass-through} is required.
+
+% subsection inductive_miner_scalable (end)
+
+% subsubsection  (end)
 % subsubsection inductive_miner_infrequent (end)
 
 \section{A minimal example}
