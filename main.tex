@@ -2,7 +2,7 @@
 
 % Ein paar hilfreiche Pakete
 \usepackage[utf8]{inputenc}
-\usepackage[nenglish]{babel}
+\usepackage[english]{babel}
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -31,7 +31,7 @@ TODO
 
 % Erster Abschnitt
 \section{Introduction}
-Considering the ever increasing amount of data \cite{manyika2011bigdata} \cite{hilbert2011worldcapacity}hi1un2wie
+Considering the ever increasing amount of data \cite{manyika2011bigdata} \cite{hilbert2011worldcapacity}
 the industry is collecting, we need a reliable tool to retrieve information from this data. Keywords like \textit{Big Data} fall more and more often in recent times. The problem in data analysis is not anymore the lack of quality data but the lack of \textit{compute} to process that data into meaningful and actionable information. 
 
 Process Management on the other hand has been a part of business development for quite some time. However, traditional \textit{Process Modelling} has some major drawbacks due to the nature of its approach. 
@@ -43,7 +43,7 @@ Errors of traditional \textbf{Process Modelling} include
     \item Event Logs only contain positive examples, always.
 \end{itemize}
 Here, \textit{Process Mining} as a conjunction of \textit{Data Mining} and \textit{Process Modelling} comes in and alleviates some of the problems. 
-Process mining can facilitate the construction of better models in less time \cite{process_mining}.
+Process mining can facilitate the construction of better models in less time \cite{process_mining}. Models that are actually based on the empirical reality rather than a simplified model of the world or a biased wish-for. 
 
 
 \begin{itemize}
@@ -58,11 +58,12 @@ Short outline of the rest of the paper.
 \label{sec:terminology}
 Introduce important notations in formula and terminology around processes
 \begin{itemize}
+    \item The Problem Statement after \cite{process_mining}
     \item Process - Case - Event 
     \item Trace - Log - Simple Log - (Ordering Relations) 
     \item Directly-Follow-Graph (maybe only later)
-    \item Shortly introduce Petri-Nets / WF-Nets (for comparisons to other approaches)
-    \item The Problem Statement after \cite{process_mining}
+    \item Process Trees and how they can be transformed into any model desired. 
+    % \item Shortly introduce Petri-Nets / WF-Nets (for comparisons to other approaches)
 \end{itemize}
 \textbf{(Maybe put the following in a seperate section.)}
 
@@ -86,7 +87,7 @@ Introduce how \textit{Inductive Mining} allows for the following and why it is "
     \item Flexibility 
     \item Scalability
 \end{itemize} 
-After \cite{process_mining}.
+After \cite{process_mining}. How are these properties achieved. 
 
 Introduce and use further formal terminology and important formulas of Inductive Mining along the way. 
 \begin{itemize}
@@ -94,6 +95,11 @@ Introduce and use further formal terminology and important formulas of Inductive
     \item Cuts 
     \item Algorithmic Notation in different notations
 \end{itemize}
+
+\subsubsection{Inductive Miner - Infrequent} % (fold)
+\label{ssub:inductive_miner_infrequent}
+
+% subsubsection inductive_miner_infrequent (end)
 
 \section{A minimal example}
 \label{sec:example}
