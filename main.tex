@@ -6,11 +6,27 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{amsthm}
 \usepackage{mathtools}
 \usepackage{subcaption}
 \usepackage{hyperref}
 
+% Drawing
+\usepackage{verbatim}
+\usepackage{tikz}
+
+
+% Algorithm 
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+% New Command for procedure TypeSetting
 \mathtoolsset{showonlyrefs}
+
+\newtheorem{definition}{\textbf{Definition}}
+
+\newenvironment{defin}[2][Definition]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
 
 \markboth{Proseminar WS 18/19: Anthropomatics: From Theory to Practice}{Proseminar SS 16: Anthropomatik: Von der Theorie zur Anwendung}
 
@@ -22,51 +38,171 @@
 
 
 \begin{document}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[] % reset theorem numbering for each chapter
+
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition} % definition numbers are dependent on theorem numbers
+\newtheorem{exmp}[thm]{Example} % same for example numbers
+
+
 \maketitle
 
 % Zusammenfassung
 \begin{abstract}
-TODO
+Since the invention of the transistor, the speed of information processing at constant cost has doubled every two years. With this increase in processing power, also our ability to store and transfer information have increased in an exponential manner, so that it is now easier than ever to collect and store huge amounts of data. Every industrial plant with modern technology collects thousands of data points every hour. Unfortunately, this data is useless by itself. In order to retrieve useful information from it, we ought to find meaningful patterns.
+In this work, we introduce \textit{process mining} as a discipline to discover such patterns in event logs and particularly examine \textit{inductive mining} as an approach to deal with very large event logs. 
 \end{abstract}
 
 % Erster Abschnitt
 \section{Introduction}
-Considering the ever increasing amount of data \cite{manyika2011bigdata} \cite{hilbert2011worldcapacity}
-the industry is collecting, we need a reliable tool to retrieve information from this data. Keywords like \textit{Big Data} fall more and more often in recent times. The problem in data analysis is not anymore the lack of quality data but the lack of \textit{compute} to process that data into meaningful and actionable information. 
+It is no surprise that the amounts of data we are able to store and process is increasing rapidly along the lines of \textit{Moore's Law}. Not only in the information technology companies is so called Big Data an omnipresent factor. The importance of data as a source of competitive advantage and better understanding of ones own processes is becoming self-evident in basically every sector. We are at a point, where  \cite{manyika2011bigdata}
+Considering this bulk of readily available data the industry is collecting \cite{hilbert2011worldcapacity}, we need reliable tools to retrieve information from this data. Because data by itself is not useful. In order to enable the management levels of companies to make insightful decisions and inventions we have to abstract actionable pieces. Working with data and discovering patterns or making predictions for future events is the core task of \textit{data mining} as a discipline and has been improved by the introduction of more powerful computers and more expressive statistical models.
 
-Process Management on the other hand has been a part of business development for quite some time. However, traditional \textit{Process Modelling} has some major drawbacks due to the nature of its approach. 
-Errors of traditional \textbf{Process Modelling} include
+
+Process management on the other hand has been a part of business development for quite some time. It is the discipline of modelling the behaviours and procedures inside organizations in a formal and graphic manner. However, traditional \textit{process modelling} has some major drawbacks due to the nature of its approach, which is to use human cognition to either model how the process should look or to abstract a process from vaguely observed behaviour. By being based on human judgment, process modelling introduces strong biases into the model.
+Possible errors of traditional \textit{process modelling} include
 \begin{itemize}
     \item The model describes an idealized version of reality.
     \item Human behaviour cannot be captured in simple stated forms
     \item The model is at the wrong abstraction level. 
-    \item Event Logs only contain positive examples, always.
-\end{itemize}
-Here, \textit{Process Mining} as a conjunction of \textit{Data Mining} and \textit{Process Modelling} comes in and alleviates some of the problems. 
-Process mining can facilitate the construction of better models in less time \cite{process_mining}. Models that are actually based on the empirical reality rather than a simplified model of the world or a biased wish-for. 
-
-
-\begin{itemize}
-    \item The importance and usage of process mining 
-    \item The difficulties and problems of process mining (Data-Quality, Limited Perspective)
 \end{itemize}
 
-Short outline of the rest of the paper.
+
+Here, \textit{process mining} as a conjunction of \textit{data mining} and \textit{process modelling} comes in and alleviates some of the problems. 
+Process mining can facilitate the construction of better models in less time \cite{process_mining}. Models that are actually based on the empirical reality rather than a simplified model of the world or a biased wish of what reality should look like. \textit{Inductive process mining} is a fairly new method to discover process trees from very large event logs by recursion on smaller sub-logs. Inductive Mining has the neat property to produce only sound models by construction and provide guarantees 
+Of course, \textit{process mining} is no magic pill and comes with it's own drawbacks and limitations which we will discover later on.
+
+
+In Section \ref{sec:terminology} we will introduce terminology and basic notation to work with in Section \ref{sec:inductivemining}. Also, we cover some quality criteria of process mining which leads us to the choice of \textit{inductive mining}. In section \ref{sec:inductivemining} we introduce the idea of inductive mining to discover block-structured process models, a.k.a process trees. In \ref{sec:example}, we put the theory to use by showing the viablity of the method in a minimal example and lastly in \ref{sec:related} we shortly discuss the prospect of the method in the future.
 
 % Notation
 \section{Process Mining - Task and Terminology - Preliminaries}
 \label{sec:terminology}
-Introduce important notations in formula and terminology around processes
-\begin{itemize}
-    \item The Problem Statement after \cite{process_mining}
-    \item Process - Case - Event 
-    \item Trace - Log - Simple Log - (Ordering Relations) 
-    \item Directly-Follow-Graph (maybe only later)
-    \item Process Trees and how they can be transformed into any model desired. 
-    % \item Shortly introduce Petri-Nets / WF-Nets (for comparisons to other approaches)
-\end{itemize}
-\textbf{(Maybe put the following in a seperate section.)}
+Process minining describes a field at the intersection of process modelling and data mining. In order to speak about \textit{inductive mining} as a particular algorithm of process mining we first introduce some basic notation of processes and the necessary data mining techniques. 
+\subsection{Processes, Cases and Logs}
+Since we want to present an algorithm for process discovery on event logs, we ought first define formally what is meant by a process and how it relates to a log. 
 
+A process may have an arbitrary number of activities. A case belongs to one specific process and can itself have many activity instances, which are related to precisely one activity. On the event level, a case and an activity instance can have many events, which in turn have multiple event attributes. With our algorithms we want to model processes by defining the related activities. Only when we instantiate the model can we observe cases and activities which manifest themselves in events. Thus, the only source we have for our construction is a set of events called a log. 
+
+For simplicity we only consider \textit{Simple event logs} over a set of activity names $\mathcal{A}$. The \textit{simple event log} $L$ can be constructed out of a complete event log $\hat{L}$ by considering only the activity classifiers of the events without their attributes. More formally:
+\begin{defn} (Simple Event Log, simple trace)
+Let $\mathcal{A}$ be a set of activity names like above. A \textit{simple} trace $\sigma$ is a sequence of activities ($\sigma \in \mathcal{A}^*$) and a simple event log is then a multi-set of traces over $\mathcal{A}$, i.e., $L \in \mathbb{B}(\mathcal{A}^*)$, where $\mathbb{B}(\mathcal{A}^*)$ is the multi-set over the domain $\mathcal{A}^*
+$ and $\mathcal{A}^*$ describes the set of all finite sequences over $\mathcal{A}$.
+\end{defn}
+
+In the following we denote by $L$ simple event logs over generic activities $\mathcal{A} = \{a, b, c, \dots \}$, by $\epsilon$ the empty trace and by $\Vert L \Vert = \sum_{t\in L} |t|$ the size of the log.
+
+\subsection{Process Trees}
+A \textit{process tree} is a compact and abstract representation of a block-structured workflow net and thus a subclass of Petri Nets, which can be transformed into most process modelling notations. Process trees are sound process models by construction and they describe a regular language.
+\begin{defn} (Process Trees)
+A \textit{process tree)} is a graph $Q = (V, E)$ with the structure of a rooted tree. Vertices $v \in V$ are either nodes or leafs. Leafs are labeled with activites $a \in \mathcal{A}$ and nodes are labeled with operators in $\bigoplus = \{ \times, \, \circlearrowleft, \rightarrow, \wedge \}$, which denote a different causal relationship between the targeted nodes below.
+\end{defn}
+To describe the semantics of a process tree, we look at the recursive monotonic function $\mathcal{L}(Q)$, which maps to the language or event-log that can be constructed by the tree. 
+\begin{align*}
+   \mathcal{L}(a) &= \{ \langle a \rangle\} \text{ for } a \in \mathcal{A} \\
+   \mathcal{L}(\tau) &= \{ \epsilon \} \\
+    \mathcal{L}(\oplus(Q_1, \dots, Q_n)) &= \oplus_l(\mathcal{L}(Q_1), \dots, \mathcal{L}(Q_n)))
+\end{align*}
+where the $Q_i, i=1, \dots, n$ are sound subtrees, or activities and $\tau$ is the silent activity. Thus, process trees are defined recursively.
+How the different language join functions $\bigoplus_l$ operate is defined in \ref{eq:operators}.
+
+\begin{align}
+\label{eq:operators}
+    \times_l(L_1, \dots, L_n) &= \bigcup_{i} L_i \\
+    \rightarrow_l(L_1, \dots, L_n) &= \{ t_1, \dots, t_n | \forall i : t_i \in L_i\} \\
+    \wedge_l(L_1, \dots, L_n) &= L_1 \diamond L_2 \diamond \dots L_n \\
+    \circlearrowleft_l(L_1, \dots, L_n) &= \\
+    \{ t_1 \cdot t'_1 \dots t_m &| \forall i: t_i \in L_i \wedge t'_i \in \times(L_2,\dots, L_n)\} 
+\end{align}
+where $i = 1, \dots, n$ and $L_i = \mathcal{L}(Q_i)$
+
+% \renewcommand{\arraystretch}{2}
+% \begin{table}[h!]
+% \centering
+% \begin{tabular}{ c  c  c } 
+% Operator & Equals & Description\\
+% \hline
+% $\times_l$ & $\bigcup_{i} L_i$ & exclusive choice \\ 
+% \hline
+% $\wedge_l$ & $L_1 \diamond L_2 \diamond \dots L_n$ & parallel execution \\ 
+% \hline
+% $\rightarrow_l$ & $\{ t_1, \dots, t_n | \forall i : t_i \in L_i\}$  & sequential execution \\ 
+% \hline
+% $\circlearrowleft_l$ & \{ t_1 \cdot t'_1 \dots t_m | \forall i: t_i \in L_i \wedge t'_i \in \times(L_2,\dots, L_n)\} \\
+% & & loop execution 
+% \end{tabular}
+% \caption{Language join functions of different operators. Let $i=1,\dots n$, in all cases}
+% \label{tab:operators}
+% \end{table}
+
+In order to understand the $\wedge$ join, we introduce a shuffle operator $\diamond$, which takes two sequences $\sigma_1, \sigma_2$ and generates the set of all interleaved sequences, where the ordering of the original sequences is preserved. E.g.: 
+$$
+\langle p,r\rangle \diamond \langle o,m \rangle = \{ \langle p,r,o,m \rangle, \langle p,o,r,m \rangle, ... \}
+$$
+which can be generalized to sets of sequences by $S_1 \diamond S_2 = \{ \sigma \in \sigma_1 \diamond \sigma_2 | \sigma_1 \in S_1 \wedge \sigma_2 \in S_2 \}$ and since it is associative also over multiple sets $S_1, \dots, S_n$.
+
+\begin{figure}[h!]
+    \centering
+    \label{fig:my_label}
+    
+    \usetikzlibrary{graphdrawing.trees}
+    \begin{tikzpicture}[nodes={draw, circle}, ->, level 2/.style={sibling distance=15mm}, level distance=0.7cm,]
+ 
+    % Tree structure
+    \node{$\rightarrow$}
+    child { node{$a$} } 
+    child { node {$\circlearrowleft$} 
+        child { node {$\rightarrow$} 
+            child {node {$\wedge$}
+                child {node {$\times$}
+                    child {node {b}}
+                    child {node {c}}
+                }
+                child {node {d}}
+            }
+            child {node {e}}
+        }
+        child { node {f} }
+    }
+ 
+    \end{tikzpicture}
+\caption{An example process tree}
+\end{figure}
+
+
+See \ref{fig:tree} for an example process tree. We can also represent the tree from the example textually starting from the root.
+\begin{equation}
+    \rightarrow(a, \circlearrowleft(\rightarrow(\wedge(\times(b,c),d),e),f), \times(g,h))
+\end{equation}
+Each process tree operator has a formal translation to a sound, block-structured workflow Petri net \cite{buijs2012treetranslation}.
+
+\textbf{Introduce Isomorphism between trees?}
+
+Given these notation we can now more or less formally define, what we mean by \textit{process discovery.}
+\begin{defn} (Process Discovery Algorithm) \cite{process_mining}
+A \textit{process discovery algorithm} can be understood as a function $\gamma$ which maps a simple event log $L$ onto a marked Petri net which is ideally sound. 
+\end{defn}
+In our case the function maps to a \textit{process tree}, which is sound by construction and equivalent to a Petri net.
+
+
+\subsection{Directly-Follows Graph}
+Within the \textit{Inductive Mining} we will work with \textit{directly-follows relations} and corresponding \textit{directly-follows graphs}, which we quickly introduce here. 
+\begin{defn}(Directly follows graph (DFG)) Let $L$ be a simple event log. The \textit{directly-follows graph } of $L$ is $G(L) = ( A_L, \mapsto_L, A_L^{start}, A_L^{end})$ where 
+\begin{align}
+    A_L &= \{ a \in \sigma | \sigma \in L\}, \text{ the set of acitivites} \\
+    \mapsto_L &= \{ (a,b) \in A \times A | a >_L b \}, \text{the follows relation} \\
+    A_L^{start} &= \{ a \in A | \exists_{\sigma \in L} a = first(\sigma) \}, \text{ start acitivites} \\
+    A_L^{end} &= \{ a \in A | \exists_{\sigma \in L} a = last(\sigma) \}, \text{ end acitivites} \\
+\end{align}
+For $a, b \in A, a >_l b$ means that $a$ is directly followed by $b$ somewhere in the log. In the following we use the short form DFG for a directly-follows graph.
+\end{defn}
+In Section \ref{sec:inductivemining} we will work with DFGs and take them apart using cuts.
+\begin{defn} (Cut) Let $G(L)$ be a DFG. A \textit{n-ary cut} of $G(L)$ is a partition of $A_L$ into pairwise disjoint sets $A_1, \dots, A_n$. The notation based on the semantic relation of the partitions is $(\bigoplus, A_1, \dots, A_n)$. An \textit{n-ary cut} is \textit{maximal} if there exists no cut $(\bigoplus, (A_1, \dots, A_{m}))$ of $G(L)$ with $m > n$. A Cut is \textit{nontrivial} if $n > 1$. The different cuts used for inductive mining after \cite{inductivemining-constructive} will be introduced in Section \ref{ssub:efficientselect}
+\end{defn}
+
+\subsection{Quality Criteria of Process Models}
 
 Elaborate on the different quality dimension of Process Mining and quickly summarize different approaches and how they compare in these quality criteria.
 \begin{itemize}
@@ -76,8 +212,9 @@ Elaborate on the different quality dimension of Process Mining and quickly summa
     \item Precision - "not underfitting" 
 \end{itemize}
 Use a table to display the differences in different algorithms ($\alpha$, HeuristicMiner, InductiveMiner, EvolutionaryTree, ...) with regard to criteria (rediscvoerablity, soundness, single-pass (scalablilty)).
-Lead towards 
 
+
+\textbf{Genetic:} Usually no guarantees in finite time. Exception exist that guarantee soundness by restricting the search space to block-structured process models, which are sound by construction. \cite{van2011geneticsoundness}
 \section{Inductive Mining}
 \label{sec:inductivemining}
 Introduce \textit{Inductive Mining} and use the terminology from Section \ref{sec:terminology} to explain \textbf{in detail} how the algorithms work. Starting from a general approach focus on one specific extension of \textit{Inductive Mining} that solves a particular problem from above. (e.g. $IM_F$, $IM_C$, $IM_D$, $IM_{FD}$).
@@ -90,25 +227,112 @@ Introduce how \textit{Inductive Mining} allows for the following and why it is "
 \end{itemize} 
 After \cite{process_mining}. How are these properties achieved. 
 
-Introduce and use further formal terminology and important formulas of Inductive Mining along the way. 
+\subsection{Inductive Mining - General Idea}
+The abstract general idea is as follows. Given a set $\bigoplus$ of operators like above, the method searches for possible splits of $L$ into smaller sub-logs $L_1, \dots, L_n$, such that the sub-logs combined by the respective operator yield $L$ again. This selection step is performed by some - currently abstract - $select(L)$, for which some essential properties hold. The algorithm then recurses on the found sub-logs until a base case is discovered. (e.g. $L = \{ \tau \}, \{ \epsilon \}$ or $\{ \varnothing \}$)
+
+The general framework independent of the actual discovery of cuts is depicted in Algorithm \ref{inductive}. Due to space constraints we will focus on one concrete implementation of the framework provided in \cite{inductivemining-constructive}, which is specified by the select algorithm $select_{B'}(L)$ in \ref{ssub:efficientselect}. 
+
+The counter variable allows the $select(L)$ procedure to return a sub-log of equal size $\Vert L_i \Vert = \Vert L \Vert$, while only doing so finitely often. Otherwise, termination could not be guaranteed.
+
+\begin{algorithm}[h!]
+\caption{Recursive B_{select}(L, $\phi$) from \cite{inductivemining-constructive}}\label{inductive-mining}
+\begin{algorithmic}[1]
+\Require the log $L$, counter variable $\phi$
+\State base $\gets $ \Call{SetBaseCase}{L}
+
+\State $P \gets select(L)$
+\If{$|P| = 0$}
+    \If{base $= \varnothing$}
+        \State \textbf{return} \Call{FlowerModel}{L} 
+    \Else 
+        \State \textbf{return} base
+    \EndIf
+\EndIf
+\State \textbf{return} $B(P)$
+
+\State \textbf{return} Something
+\end{algorithmic}
+\label{inductive}
+\end{algorithm}
+
+Where
+\begin{align*}
+B(P) = & \Big\{ \oplus (M_1, \dots ,M_n) \quad | \\ &(\oplus, ((L_1, \phi_1), \dots, (L_n, \phi_n))) \in P \\ &\wedge M_i \in B(L_i, \phi_i) \Big\} \cup \text{base}
+\end{align*}
+and $\textproc{FlowerModel}(L)$ returns a loop that can replay any log containing the acitivities in L.
+We see that the generic procedure $select(L)$ returns tuples $(\oplus, ((L_1, \phi_1), \dots, (L_n, \phi_n)))$, for which all of the following conditions must hold.
+For brevity, the handling base cases is not depicted in detail. 
 \begin{itemize}
-    \item Directly Follows Graph
-    \item Cuts 
-    \item Algorithmic Notation in different notations
+    \item The operator applied on the sublogs $L_i$ must yield a super-set of $L$
+    \item $\forall i : \Vert L_i \Vert + \phi_i < \Vert L \Vert + \phi $, so that the recursion ends
+    \item $\forall i :$ $L_i$ less than or equal to $L$
+    \item $\forall i :$ $\phi_i$ less than or equal to $\phi$
+    \item Activities in $L_i$ also occur in $L$, so that it is a sound sub-log. (i.e $A_i \subset A_L$)
+    \item For the number of sub-logs $n \leq \Vert L \Vert + \phi$ must hold
 \end{itemize}
+Given this, the termination and fitness of the method can be proven for a generic $select(L)$ \cite{inductivemining-constructive} (Theorem 2 and 3)
 
-\subsection{Inductive Miner - Infrequent} % (fold)
-\label{ssub:inductive_miner_infrequent}
-Introduce how infrequent behaviour is excluded through filters on cuts, logs and graphs later. 
+\subsection{Efficient Select} % (fold)
+\label{ssub:efficientselect}
+Let us now consider a concrete selection procedure called $select_{B'}(L)$ in \cite{inductivemining-constructive}
 
-\subsection{Inductive Miner - Scalable} % (fold)
-\label{sub:inductive_miner_scalable}
-Introduce work on scalable algorithms that work on directly-follows-graphs rather than on the event logs. Thus only a single \emph{pass-through} is required.
+Using the DFG of a log $L$, we try to find the dominant operator that orders the behaviour in the graph.\cite{inductivemining-constructive} A \textit{directed-acylclic graph} for example can always be split meaningfully by a sequence cut. Given the cut and the corresponding operator, we split the log and perform the same procedure on the sub-logs $L_1, \dots, L_n$, as outlined above. The different cuts explained below closely resemble existing graph algorithms for (strongly) connected components. Given the sub-graphs (i.e. subsets of activities $A_i$), each cut has its corresponding \textproc{SPLIT}$(L, (A_1, \dots, A_n))$ function, which maps the log $L$ onto the sub-logs $L_i$ according to the cut specified by $A_1, \dots, A_n$
 
-% subsection inductive_miner_scalable (end)
 
-% subsubsection  (end)
-% subsubsection inductive_miner_infrequent (end)
+We now define the four cuts related to the operators defined in \ref{eq:operators}. Let $G$ be a DFG and let $A_1, \dots, A_n$ be sets of activities $A_i \subset A_L$.
+
+\begin{defn} (Exclusive Choice Cut)
+An \textit{exclusive choice cut} is a cut ($\times, (A_1, \dots, A_n)$) of $G$ such that
+$$
+\forall i,j = 1, \dots, n, a \in A_i, b \in A_j: i \neq j \Rightarrow a \not \mapsto_L b
+$$
+\end{defn}
+
+\begin{defn} (Sequence Cut)
+A \textit{sequence cut} is an ordered cut ($\rightarrow, (A_1, \dots, A_n$)) of $G$ such that
+$$
+\forall i,j =1,\dots, n \wedge  a \in A_i, b \in A_j: i < j \Rightarrow (a \mapsto_L^{+} b \not \mapsto^{+}_L a)
+$$
+where $a \mapsto_L^{+} b$ means that $a$ is followed by $b$ in the log, but not only directly. 
+\end{defn}
+
+\begin{defn} (Parallel Cut)
+A \textit{parallel cut} is a cut ($\wedge,( A_1, \dots, A_n$)) of $G$ such that
+\begin{align*}
+&\forall i = 1,\dots, n : A_i \cap A_L^{start} \neq \varnothing, A_i \cap A_L^{end} \neq \varnothing \text{ and } \\
+&\forall i,j = 1, \dots, n \wedge a \in A_i, b \in A_j : i \neq j \Rightarrow a \mapsto_L^{+} b 
+\end{align*}
+\end{defn}
+
+\begin{defn} (Loop Cut)
+A \textit{loop cut} is a partially ordered cut ($\circlearrowleft,( A_1, \dots, A_n$)) of $G$ such that
+\begin{align*}
+\text{TODO}
+\end{align*}
+\end{defn}
+
+Using these cuts and there respective \textproc{SPLIT} functions we can construct the $select_{B'}(L)$ in Algorithm \ref{select}. Write \textit{n.m. cut} as short for nontrivial maximal cut.
+
+\begin{algorithm}[h!]
+\caption{$select_{B'}(L)$ from \cite{inductivemining-constructive}}
+\begin{algorithmic}[1]
+\If{$\epsilon \in L \vee L = \{ \langle a \rangle \}$ for $a \in A_L$}
+    \State \textbf{return} $\varnothing$
+\EndIf
+\If{$c \gets$ n.m exclusive-choice cut of $G(L)$}
+    \State $L_1, \dots, L_n \gets \Call{ECSplit}{L, (A_1, \dots, A_n)} $
+    \State \textbf{return} $\{\rightarrow, ((L_1, 0), \dots, (L_n, 0))\}$
+\EndIf
+\If{$c \gets$ n.m sequence cut of $G(L)$}
+    \State $L_1, \dots, L_n \gets \Call{ECSplit}{L, (A_1, \dots, A_n)} $
+    \State \textbf{return} $\{\rightarrow, ((L_1, 0), \dots, (L_n, 0))\}$
+\EndIf
+\State \textbf{return} $\varnothing$
+
+\State \textbf{return} Something
+\end{algorithmic}
+\label{select}
+\end{algorithm}
 
 \section{A minimal example}
 \label{sec:example}
@@ -116,6 +340,7 @@ Showcasing the method with a minimal working example to convey the major advanta
 
 
 \section{Discussion \& Related Work}
+\label{sec:related}
 What are the prospect of \textit{Process Mining}, which techniques are new, which are promising in the context of ever larger amounts of data and new requirements?
 
 \bibliographystyle{ieeetr}
